@@ -3,6 +3,13 @@ title: "fl1"
 format: html
 editor: visual
 ---
+#install packages
+```{r}
+install.packages(c("tidyverse", "readxl", "janitor", "here"))
+install.packages(c("cars", "effectsize", "rstatix"))
+```
+
+
 #packages
 ```{r}
 #| message: false
@@ -14,15 +21,12 @@ library(janitor)
 library(car) # levene test
 library(effectsize) # assess effect size 
 library(rstatix) # anova, kruskal wallis
-
 ```
 
 #Read  
 ```{r}
 fl1_june <- read_xlsx(path = here("data", 
-                        "June 2026 Firebreak Data - Aidan.xlsx",
-                         sheet = "FL1"))
-
-"C:\Users\cream\OneDrive\Documents\starr-2026-firebreak\data\June 2026 Firebreak Data - Aidan.xlsx"
+                        "June 2026 Firebreak Data - Aidan.xlsx"))
+                        # sheet = "FL1"))
 ```
 
