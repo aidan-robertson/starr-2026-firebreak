@@ -3,5 +3,23 @@ title: "fl1"
 format: html
 editor: visual
 ---
+#packages
+```{r}
+#| message: false
+# general use
+library(tidyverse)
+library(readxl)
+library(here)
+library(janitor)
+library(car) # levene test
+library(effectsize) # assess effect size 
+library(rstatix) # anova, kruskal wallis
+```
 
-skibidibopbop!
+#data load-in
+```{r}
+fl1_nov <- read_xlsx(path = here("data", 
+                        "June 2026 Firebreak Data - Aidan)"),
+                         sheet = "FL1")
+```
+
