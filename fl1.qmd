@@ -26,7 +26,7 @@ library(rstatix) # anova, kruskal wallis
 #Read  
 ```{r}
 fl1_june <- read_xlsx(path = here("data", 
-                        "June 2026 Firebreak Data - Aidan.xlsx"))
-                        # sheet = "FL1"))
+                        "June 2026 Firebreak Data - Aidan.xlsx",
+                        sheet = "FL1"))
 ```
 
