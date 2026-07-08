@@ -25,28 +25,51 @@ library(rstatix) # anova, kruskal wallis
 library(sjmisc)
 ```
 
-#Read  
+#Read in Data
 ```{r}
 fl1_june <- read_xlsx(path = here("data", "june 2026 firebreak, aidan copy 1.xlsx"),
                       sheet = "FL1")
+
+fl1s_june <- read_xlsx(path = here("data", "june 2026 firebreak, aidan copy 1.xlsx"),
+                      sheet = "FL1S")
 ```
 
+#Cleaning Data
 ```{r}
 fl1_june_clean <- fl1_june %>% 
-  slice(-81) %>% 
+  slice(-81) %>% # remove n/a row
   rotate_df() %>% 
-  row_to_names(row_number = 1) %>% 
+  row_to_names(row_number = 1) %>% #name rows with values from row 1 (species)
   rownames_to_column() %>% 
   mutate(rowname = case_when(grepl("No.", rowname) ~ "Number",
-                           grepl("Cov.", rowname) ~ "Cover")) %>% 
+                           grepl("Cov.", rowname) ~ "Cover")) %>% #rename values to regular words
   pivot_longer(cols = ACMAME:HIRINC,
               names_to = "species",
-              values_to = "values") %>% 
+              values_to = "values") %>% #elongate df with species as values, not columns
   pivot_wider(names_from = "rowname",
-              values_from = "values") %>% 
+              values_from = "values") %>% #create columns for number and cover
   clean_names() %>% 
   rename(strip = strip_no,
          quad = quad_no) %>% 
-  
+  mutate(site = 1, aspect = "flat", orientation = "central")
+
+fl1s_june_clean <- fl1s_june %>% 
+  slice(-80) %>% # remove n/a row
+  rotate_df() %>% 
+  row_to_names(row_number = 1) %>% #name rows with values from row 1 (species)
+  rownames_to_column() %>% 
+  mutate(rowname = case_when(grepl("No.", rowname) ~ "Number",
+                           grepl("Cov.", rowname) ~ "Cover")) %>% #rename values to regular words
+  pivot_longer(cols = ACMAME:HIRINC,
+              names_to = "species",
+              values_to = "values") %>% #elongate df with species as values, not columns
+  pivot_wider(names_from = "rowname",
+              values_from = "values") %>% #create columns for number and cover
+  clean_names() %>% 
+  rename(strip = strip_no,
+         quad = quad_no) %>% 
+  mutate(site = 1, aspect = "flat", orientation = "south")
+
+fl1_full <- merge(fl1_june_clean, fl1s_june_clean, by = c("site")) #flawp???
 ```
 
