@@ -7,6 +7,7 @@ editor: visual
 ```{r}
 install.packages(c("tidyverse", "readxl", "janitor", "here"))
 install.packages(c("cars", "effectsize", "rstatix"))
+install.packages("sjmisc")
 ```
 
 
@@ -21,12 +22,31 @@ library(janitor)
 library(car) # levene test
 library(effectsize) # assess effect size 
 library(rstatix) # anova, kruskal wallis
+library(sjmisc)
 ```
 
 #Read  
 ```{r}
-fl1_june <- read_xlsx(path = here("data", 
-                        "June 2026 Firebreak Data - Aidan.xlsx",
-                        sheet = "FL1"))
+fl1_june <- read_xlsx(path = here("data", "june 2026 firebreak, aidan copy 1.xlsx"),
+                      sheet = "FL1")
+```
+
+```{r}
+fl1_june_clean <- fl1_june %>% 
+  slice(-81) %>% 
+  rotate_df() %>% 
+  row_to_names(row_number = 1) %>% 
+  rownames_to_column() %>% 
+  mutate(rowname = case_when(grepl("No.", rowname) ~ "Number",
+                           grepl("Cov.", rowname) ~ "Cover")) %>% 
+  pivot_longer(cols = ACMAME:HIRINC,
+              names_to = "species",
+              values_to = "values") %>% 
+  pivot_wider(names_from = "rowname",
+              values_from = "values") %>% 
+  clean_names() %>% 
+  rename(strip = strip_no,
+         quad = quad_no) %>% 
+  
 ```
 
