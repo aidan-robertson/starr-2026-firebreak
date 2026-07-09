@@ -25,16 +25,20 @@ library(rstatix) # anova, kruskal wallis
 library(sjmisc)
 ```
 
-#Read in Data
+#June FL1 Read Data -  Test
 ```{r}
 fl1_june <- read_xlsx(path = here("data", "june 2026 firebreak, aidan copy 1.xlsx"),
                       sheet = "FL1")
 
 fl1s_june <- read_xlsx(path = here("data", "june 2026 firebreak, aidan copy 1.xlsx"),
                       sheet = "FL1S")
+
+fl1n_june <- read_xlsx(path = here("data", "june 2026 firebreak, aidan copy 1.xlsx"),
+                      sheet = "FL1N")
+
 ```
 
-#Cleaning Data
+#June FL1 Wrangling - Test
 ```{r}
 fl1_june_clean <- fl1_june %>% 
   slice(-81) %>% # remove n/a row
@@ -42,7 +46,7 @@ fl1_june_clean <- fl1_june %>%
   row_to_names(row_number = 1) %>% #name rows with values from row 1 (species)
   rownames_to_column() %>% 
   mutate(rowname = case_when(grepl("No.", rowname) ~ "Number",
-                           grepl("Cov.", rowname) ~ "Cover")) %>% #rename values to regular words
+                           grepl("Cov.", rowname) ~ "Cover")) %>% #rename values to regular words 
   pivot_longer(cols = ACMAME:HIRINC,
               names_to = "species",
               values_to = "values") %>% #elongate df with species as values, not columns
@@ -51,10 +55,11 @@ fl1_june_clean <- fl1_june %>%
   clean_names() %>% 
   rename(strip = strip_no,
          quad = quad_no) %>% 
-  mutate(site = 1, aspect = "flat", orientation = "central")
+  mutate(site = 1, aspect = "flat", orientation = "central") %>% 
+  drop_na(cover) #remove all species not observed
 
 fl1s_june_clean <- fl1s_june %>% 
-  slice(-80) %>% # remove n/a row
+   drop_na(Species) %>% # remove n/a row
   rotate_df() %>% 
   row_to_names(row_number = 1) %>% #name rows with values from row 1 (species)
   rownames_to_column() %>% 
@@ -68,8 +73,60 @@ fl1s_june_clean <- fl1s_june %>%
   clean_names() %>% 
   rename(strip = strip_no,
          quad = quad_no) %>% 
-  mutate(site = 1, aspect = "flat", orientation = "south")
+  mutate(site = 1, aspect = "flat", orientation = "south") %>% 
+  drop_na(cover) #remove all species not observed
 
-fl1_full <- merge(fl1_june_clean, fl1s_june_clean, by = c("site")) #flawp???
+fl1n_june_clean <- fl1n_june %>% 
+  drop_na(Species) %>% # remove n/a row
+  rotate_df() %>% 
+  row_to_names(row_number = 1) %>% #name rows with values from row 1 (species)
+  rownames_to_column() %>% 
+  mutate(rowname = case_when(grepl("No.", rowname) ~ "Number",
+                           grepl("Cov.", rowname) ~ "Cover")) %>% #rename values to regular words
+  pivot_longer(cols = ACMAME:HIRINC,
+              names_to = "species",
+              values_to = "values") %>% #elongate df with species as values, not columns
+  pivot_wider(names_from = "rowname",
+              values_from = "values") %>% #create columns for number and cover
+  clean_names() %>% 
+  rename(strip = strip_no,
+         quad = quad_no) %>% 
+  mutate(site = 1, aspect = "flat", orientation = "north") %>% 
+  drop_na(cover) #remove all species not observed
+
+fl1_full <- merge_df(fl1_june_clean, fl1s_june_clean, fl1n_june_clean) #merge all fl1 dfs
+```
+
+#Read Data June Full
+```{r}
+sa1_june <- read_xlsx(path = here("data", "FirebreakData2026_fixed.xlsx"),
+                      sheet = "SA1")
+
+sa1s_june <- read_xlsx(path = here("data", "FirebreakData2026_fixed.xlsx"),
+                      sheet = "SA1S")
+
+sa1n_june <- read_xlsx(path = here("data", "FirebreakData2026_fixed.xlsx"),
+                      sheet = "SA1N")
+```
+
+#SA1 Wrangling - test
+```{r}
+sa1_june_clean <- sa1_june %>% 
+  drop_na(Species) %>% # remove n/a row
+  rotate_df() %>% 
+  row_to_names(row_number = 1) %>% #name rows with values from row 1 (species)
+  rownames_to_column() %>% 
+  mutate(rowname = case_when(grepl("No.", rowname) ~ "Number",
+                           grepl("Cov.", rowname) ~ "Cover")) %>% #rename values to regular words
+  pivot_longer(cols = ACMAME:HIRINC,
+              names_to = "species",
+              values_to = "values") %>% #elongate df with species as values, not columns
+  pivot_wider(names_from = "rowname",
+              values_from = "values") %>% #create columns for number and cover
+  clean_names() %>% 
+  rename(strip = strip_no,
+         quad = quad_no) %>% 
+  mutate(site = 1, aspect = "flat", orientation = "north") %>% 
+  drop_na(cover)  #remove all species not observed  
 ```
 
