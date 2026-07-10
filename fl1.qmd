@@ -27,7 +27,7 @@ library(sjmisc)
 library(writexl)
 ```
 
-#June FL1 Read Data -  Test
+#June FL1 Read Data - TEST
 ```{r}
 fl1_june <- read_xlsx(path = here("data", "june 2026 firebreak, aidan copy 1.xlsx"),
                       sheet = "FL1")
@@ -40,7 +40,7 @@ fl1n_june <- read_xlsx(path = here("data", "june 2026 firebreak, aidan copy 1.xl
 
 ```
 
-#June FL1 Wrangling - Test
+#June FL1 Wrangling - TEST
 ```{r}
 fl1_june_clean <- fl1_june %>% 
   slice(-81) %>% # remove n/a row
@@ -100,7 +100,8 @@ fl1_full <- merge_df(fl1_june_clean, fl1s_june_clean, fl1n_june_clean) #merge al
 ```
 
 
-#Read Data June Full
+
+#June Data Read In
 ```{r}
 #Staging Area 1
 sa1_june <- read_xlsx(path = here("data", "FirebreakData2026_final.xlsx"),
@@ -212,8 +213,7 @@ sa4e_june <- read_xlsx(path = here("data", "FirebreakData2026_final.xlsx"),
                       #sheet = "SA6W")
 ```
 
-
-#Wrangling
+#June Wrangling
 ```{r}
 #Staging Area 1 Wrangling
 sa1_june_clean <- sa1_june %>% 
@@ -717,11 +717,22 @@ sa4_full <- merge_df(sa4_june_clean, sa4e_june_clean)
 ```
 
 
-#Full Species List
+#June Full Species List
 ```{r}
 june <- merge_df(fl1_full, fl2_full, sa1_full, sa2_full, sa3_full, sa4_full, sl1_full, sl2_full, sl3_full)
 
-all_june <- june %>% group_by(site, aspect)
+all_june <- june %>%
+  mutate(status = case_when(
+    site == 1 & aspect == "slope" ~ "Slope 1",
+    site == 1 & aspect == "flat" ~ "Flat 1",
+    site == 1 & aspect == "staging area" ~ "Staging Area 1",
+    site == 2 & aspect == "slope" ~ "Slope 2",
+    site == 2 & aspect == "flat" ~ "Flat 2",
+    site == 2 & aspect == "staging area" ~ "Staging Area 2",
+    site == 3 & aspect == "slope" ~ "Slope 3",
+    site == 3 & aspect == "staging area" ~ "Staging Area 3",
+    site == 4 & aspect == "staging area" ~ "Staging Area 4",
+    .default = "Other"))
 
 species_list <- june %>% dplyr::select(species) %>% distinct()
 
@@ -733,15 +744,14 @@ species_class <- read_xlsx(path = here("data", "species_june_classified.xlsx"))
 #Merge DFs (all june & classified species)
 ```{r}
 all_june_classified <- merge(all_june, species_class, by = "species")
-
 ```
 
-#Plotting N/NN
+#June Plotting N/NN
 ```{r}
 ggplot(all_june_classified) +
-  aes(y = (as.numeric(as.character(cover))), x = aspect, color = class ) +
+  aes(y = (as.numeric(as.character(cover))), x = status, color = class ) +
   geom_boxplot() +
-  facet_wrap(~site+aspect, ncol = 3, scales = "free") +
+  facet_wrap(~status, ncol = 3, scales = "free") +
   #geom_point(position=position_jitterdodge(
  #  jitter.width = 0,
  #  jitter.height = 0,
@@ -750,7 +760,12 @@ ggplot(all_june_classified) +
   scale_color_manual(values = c("#e52e39", "#FFBF00", "#3271a5")) +
   labs(x = "Aspect",
        y = "Cover",
-       color = "Cover Type")
+       color = "Cover Type") +
+  theme_minimal()
 
+#is there a correlation between native cover and nn or bareground?
 ```
+
+
+
 
