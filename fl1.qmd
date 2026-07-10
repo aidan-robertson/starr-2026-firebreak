@@ -769,3 +769,619 @@ ggplot(all_june_classified) +
 
 
 
+#Nov Data Read In
+```{r}
+#Staging Area 1
+sa1_nov <- read_xlsx(path = here("data", "FirebreakData_Nov2026.xlsx"),
+                      sheet = "SA1")
+
+sa1s_nov <- read_xlsx(path = here("data", "FirebreakData_Nov2026.xlsx"),
+                      sheet = "SA1S")
+
+sa1n_nov <- read_xlsx(path = here("data", "FirebreakData_Nov2026.xlsx"),
+                      sheet = "SA1N")
+
+#Flat 1
+fl1_nov <- read_xlsx(path = here("data", "FirebreakData_Nov2026.xlsx"),
+                      sheet = "FL1")
+
+fl1s_nov <- read_xlsx(path = here("data", "FirebreakData_Nov2026.xlsx"),
+                      sheet = "FL1S")
+
+fl1n_nov <- read_xlsx(path = here("data", "FirebreakData_Nov2026.xlsx"),
+                      sheet = "FL1N")
+
+#Slope 1
+sl1_nov <- read_xlsx(path = here("data", "FirebreakData_Nov2026.xlsx"),
+                      sheet = "SL1")
+
+sl1w_nov <- read_xlsx(path = here("data", "FirebreakData_Nov2026.xlsx"),
+                      sheet = "SL1W")
+
+sl1e_nov <- read_xlsx(path = here("data", "FirebreakData_Nov2026.xlsx"),
+                      sheet = "SL1E")
+
+#Staging Area 2
+#sa2_nov <- read_xlsx(path = here("data", "FirebreakData_Nov2026.xlsx"),
+                      #sheet = "SA2")
+
+#sa2s_nov <- read_xlsx(path = here("data", "FirebreakData_Nov2026.xlsx"),
+                      #sheet = "SA2S")
+
+#sa2n_nov <- read_xlsx(path = here("data", "FirebreakData_Nov2026.xlsx"),
+                      #sheet = "SA2N")
+
+#Flat 2
+fl2_nov <- read_xlsx(path = here("data", "FirebreakData_Nov2026.xlsx"),
+                      sheet = "FL2")
+
+fl2w_nov <- read_xlsx(path = here("data", "FirebreakData_Nov2026.xlsx"),
+                      sheet = "FL2W")
+
+fl2e_nov <- read_xlsx(path = here("data", "FirebreakData_Nov2026.xlsx"),
+                      sheet = "FL2E")
+
+#Slope 2
+sl2_nov <- read_xlsx(path = here("data", "FirebreakData_Nov2026.xlsx"),
+                      sheet = "SL2")
+
+sl2n_nov <- read_xlsx(path = here("data", "FirebreakData_Nov2026.xlsx"),
+                      sheet = "SL2N")
+
+sl2s_nov <- read_xlsx(path = here("data", "FirebreakData_Nov2026.xlsx"),
+                      sheet = "SL2S")
+
+#Staging Area 3
+sa3_nov <- read_xlsx(path = here("data", "FirebreakData_Nov2026.xlsx"),
+                      sheet = "SA3")
+
+sa3e_nov <- read_xlsx(path = here("data", "FirebreakData_Nov2026.xlsx"),
+                      sheet = "SA3E")
+
+sa3w_nov <- read_xlsx(path = here("data", "FirebreakData_Nov2026.xlsx"),
+                      sheet = "SA3W")
+
+#Flat 3
+fl3_nov <- read_xlsx(path = here("data", "FirebreakData_Nov2026.xlsx"),
+                      sheet = "FL3")
+
+fl3e_nov <- read_xlsx(path = here("data", "FirebreakData_Nov2026.xlsx"),
+                      sheet = "FL3E")
+
+fl3w_nov <- read_xlsx(path = here("data", "FirebreakData_Nov2026.xlsx"),
+                      sheet = "FL3W")
+
+#Slope 3
+sl3_nov <- read_xlsx(path = here("data", "FirebreakData_Nov2026.xlsx"),
+                      sheet = "SL3")
+
+sl3w_nov <- read_xlsx(path = here("data", "FirebreakData_Nov2026.xlsx"),
+                      sheet = "SL3W")
+
+sl3e_nov <- read_xlsx(path = here("data", "FirebreakData_Nov2026.xlsx"),
+                      sheet = "SL3E")
+
+#Staging Area 4
+sa4_nov <- read_xlsx(path = here("data", "FirebreakData_Nov2026.xlsx"),
+                     sheet = "SA4")
+
+sa4e_nov <- read_xlsx(path = here("data", "FirebreakData_Nov2026.xlsx"),
+                      sheet = "SA4E")
+
+sa4n_nov <- read_xlsx(path = here("data", "FirebreakData_Nov2026.xlsx"),
+                      sheet = "SA4N")
+
+#Staging Area 6
+sa6_nov <- read_xlsx(path = here("data", "FirebreakData_Nov2026.xlsx"),
+                      sheet = "SA6")
+
+sa6e_nov <- read_xlsx(path = here("data", "FirebreakData_Nov2026.xlsx"),
+                      sheet = "SA6E")
+
+sa6w_nov <- read_xlsx(path = here("data", "FirebreakData_Nov2026.xlsx"),
+                      sheet = "SA6W")
+```
+
+#Nov Wrangling
+```{r}
+#Staging Area 1 Wrangling
+sa1_nov_clean <- sa1_nov %>% 
+  drop_na(Species) %>% # remove n/a row
+  rotate_df() %>% 
+  row_to_names(row_number = 1) %>% #name rows with values from row 1 (species)
+  rownames_to_column() %>% 
+  mutate(rowname = case_when(grepl("No.", rowname) ~ "Number",
+                           grepl("Cov.", rowname) ~ "Cover")) %>% #rename values to regular words
+  pivot_longer(cols = ACMAME:HIRINC,
+              names_to = "species",
+              values_to = "values") %>% #elongate df with species as values, not columns
+  pivot_wider(names_from = "rowname",
+              values_from = "values") %>% #create columns for number and cover
+  clean_names() %>% 
+  rename(strip = strip_no,
+         quad = quad_no) %>% 
+  mutate(site = 1, aspect = "staging area", orientation = "central", month = "November", year = "2026") %>% 
+  drop_na(cover)  #remove all species not observed  
+
+sa1s_june_clean <- sa1s_june %>% 
+  drop_na(Species) %>% # remove n/a row
+  rotate_df() %>% 
+  row_to_names(row_number = 1) %>% #name rows with values from row 1 (species)
+  rownames_to_column() %>% 
+  mutate(rowname = case_when(grepl("No.", rowname) ~ "Number",
+                           grepl("Cov.", rowname) ~ "Cover")) %>% #rename values to regular words
+  pivot_longer(cols = ACMAME:HIRINC,
+              names_to = "species",
+              values_to = "values") %>% #elongate df with species as values, not columns
+  pivot_wider(names_from = "rowname",
+              values_from = "values") %>% #create columns for number and cover
+  clean_names() %>% 
+  rename(strip = strip_no,
+         quad = quad_no) %>% 
+  mutate(site = 1, aspect = "staging area", orientation = "south", month = "November", year = "2026") %>% 
+  drop_na(cover)  #remove all species not observed  
+
+sa1n_june_clean <- sa1n_june %>% 
+  drop_na(Species) %>% # remove n/a row
+  rotate_df() %>% 
+  row_to_names(row_number = 1) %>% #name rows with values from row 1 (species)
+  rownames_to_column() %>% 
+  mutate(rowname = case_when(grepl("No.", rowname) ~ "Number",
+                           grepl("Cov.", rowname) ~ "Cover")) %>% #rename values to regular words
+  pivot_longer(cols = ACMAME:HIRINC,
+              names_to = "species",
+              values_to = "values") %>% #elongate df with species as values, not columns
+  pivot_wider(names_from = "rowname",
+              values_from = "values") %>% #create columns for number and cover
+  clean_names() %>% 
+  rename(strip = strip_no,
+         quad = quad_no) %>% 
+  mutate(site = 1, aspect = "staging area", orientation = "north") %>% 
+  drop_na(cover)  #remove all species not observed  
+
+sa1_full <- merge_df(sa1_june_clean, sa1s_june_clean, sa1n_june_clean)
+
+#Flat 1 Wrangling
+fl1_june_clean <- fl1_june %>% 
+  drop_na(Species) %>% # remove n/a row
+  rotate_df() %>% 
+  row_to_names(row_number = 1) %>% #name rows with values from row 1 (species)
+  rownames_to_column() %>% 
+  mutate(rowname = case_when(grepl("No.", rowname) ~ "Number",
+                           grepl("Cov.", rowname) ~ "Cover")) %>% #rename values to regular words
+  pivot_longer(cols = ACMAME:HIRINC,
+              names_to = "species",
+              values_to = "values") %>% #elongate df with species as values, not columns
+  pivot_wider(names_from = "rowname",
+              values_from = "values") %>% #create columns for number and cover
+  clean_names() %>% 
+  rename(strip = strip_no,
+         quad = quad_no) %>% 
+  mutate(site = 1, aspect = "flat", orientation = "central") %>% 
+  drop_na(cover)  #remove all species not observed  
+
+fl1s_june_clean <- fl1s_june %>% 
+  drop_na(Species) %>% # remove n/a row
+  rotate_df() %>% 
+  row_to_names(row_number = 1) %>% #name rows with values from row 1 (species)
+  rownames_to_column() %>% 
+  mutate(rowname = case_when(grepl("No.", rowname) ~ "Number",
+                           grepl("Cov.", rowname) ~ "Cover")) %>% #rename values to regular words
+  pivot_longer(cols = ACMAME:HIRINC,
+              names_to = "species",
+              values_to = "values") %>% #elongate df with species as values, not columns
+  pivot_wider(names_from = "rowname",
+              values_from = "values") %>% #create columns for number and cover
+  clean_names() %>% 
+  rename(strip = strip_no,
+         quad = quad_no) %>% 
+  mutate(site = 1, aspect = "flat", orientation = "south") %>% 
+  drop_na(cover)  #remove all species not observed  
+
+fl1n_june_clean <- fl1n_june %>% 
+  drop_na(Species) %>% # remove n/a row
+  rotate_df() %>% 
+  row_to_names(row_number = 1) %>% #name rows with values from row 1 (species)
+  rownames_to_column() %>% 
+  mutate(rowname = case_when(grepl("No.", rowname) ~ "Number",
+                           grepl("Cov.", rowname) ~ "Cover")) %>% #rename values to regular words
+  pivot_longer(cols = ACMAME:HIRINC,
+              names_to = "species",
+              values_to = "values") %>% #elongate df with species as values, not columns
+  pivot_wider(names_from = "rowname",
+              values_from = "values") %>% #create columns for number and cover
+  clean_names() %>% 
+  rename(strip = strip_no,
+         quad = quad_no) %>% 
+  mutate(site = 1, aspect = "flat", orientation = "north") %>% 
+  drop_na(cover)  #remove all species not observed  
+
+fl1_full <- merge_df(fl1_june_clean, fl1s_june_clean, fl1n_june_clean)
+
+#Slope 1 Wrangling
+sl1_june_clean <- sl1_june %>% 
+  drop_na(Species) %>% # remove n/a row
+  rotate_df() %>% 
+  row_to_names(row_number = 1) %>% #name rows with values from row 1 (species)
+  rownames_to_column() %>% 
+  mutate(rowname = case_when(grepl("No.", rowname) ~ "Number",
+                           grepl("Cov.", rowname) ~ "Cover")) %>% #rename values to regular words
+  pivot_longer(cols = ACMAME:HIRINC,
+              names_to = "species",
+              values_to = "values") %>% #elongate df with species as values, not columns
+  pivot_wider(names_from = "rowname",
+              values_from = "values") %>% #create columns for number and cover
+  clean_names() %>% 
+  rename(strip = strip_no,
+         quad = quad_no) %>% 
+  mutate(site = 1, aspect = "slope", orientation = "central") %>% 
+  drop_na(cover)  #remove all species not observed  
+
+sl1e_june_clean <- sl1e_june %>% 
+  drop_na(Species) %>% # remove n/a row
+  rotate_df() %>% 
+  row_to_names(row_number = 1) %>% #name rows with values from row 1 (species)
+  rownames_to_column() %>% 
+  mutate(rowname = case_when(grepl("No.", rowname) ~ "Number",
+                           grepl("Cov.", rowname) ~ "Cover")) %>% #rename values to regular words
+  pivot_longer(cols = ACMAME:HIRINC,
+              names_to = "species",
+              values_to = "values") %>% #elongate df with species as values, not columns
+  pivot_wider(names_from = "rowname",
+              values_from = "values") %>% #create columns for number and cover
+  clean_names() %>% 
+  rename(strip = strip_no,
+         quad = quad_no) %>% 
+  mutate(site = 1, aspect = "slope", orientation = "east") %>% 
+  drop_na(cover)  #remove all species not observed  
+
+sl1w_june_clean <- sl1w_june %>% 
+  drop_na(Species) %>% # remove n/a row
+  rotate_df() %>% 
+  row_to_names(row_number = 1) %>% #name rows with values from row 1 (species)
+  rownames_to_column() %>% 
+  mutate(rowname = case_when(grepl("No.", rowname) ~ "Number",
+                           grepl("Cov.", rowname) ~ "Cover")) %>% #rename values to regular words
+  pivot_longer(cols = ACMAME:HIRINC,
+              names_to = "species",
+              values_to = "values") %>% #elongate df with species as values, not columns
+  pivot_wider(names_from = "rowname",
+              values_from = "values") %>% #create columns for number and cover
+  clean_names() %>% 
+  rename(strip = strip_no,
+         quad = quad_no) %>% 
+  mutate(site = 1, aspect = "slope", orientation = "west") %>% 
+  drop_na(cover)  #remove all species not observed  
+
+sl1_full <- merge_df(sl1_june_clean, sl1e_june_clean, sl1w_june_clean)
+
+#Staging Area 2 Wrangling
+sa2_june_clean <- sa2_june %>% 
+  drop_na(Species) %>% # remove n/a row
+  rotate_df() %>% 
+  row_to_names(row_number = 1) %>% #name rows with values from row 1 (species)
+  rownames_to_column() %>% 
+  mutate(rowname = case_when(grepl("No.", rowname) ~ "Number",
+                           grepl("Cov.", rowname) ~ "Cover")) %>% #rename values to regular words
+  pivot_longer(cols = ACMAME:HIRINC,
+              names_to = "species",
+              values_to = "values") %>% #elongate df with species as values, not columns
+  pivot_wider(names_from = "rowname",
+              values_from = "values") %>% #create columns for number and cover
+  clean_names() %>% 
+  rename(strip = strip_no,
+         quad = quad_no) %>% 
+  mutate(site = 2, aspect = "staging area", orientation = "central") %>% 
+  drop_na(cover)  #remove all species not observed  
+
+sa2s_june_clean <- sa2s_june %>% 
+  drop_na(Species) %>% # remove n/a row
+  rotate_df() %>% 
+  row_to_names(row_number = 1) %>% #name rows with values from row 1 (species)
+  rownames_to_column() %>% 
+  mutate(rowname = case_when(grepl("No.", rowname) ~ "Number",
+                           grepl("Cov.", rowname) ~ "Cover")) %>% #rename values to regular words
+  pivot_longer(cols = ACMAME:HIRINC,
+              names_to = "species",
+              values_to = "values") %>% #elongate df with species as values, not columns
+  pivot_wider(names_from = "rowname",
+              values_from = "values") %>% #create columns for number and cover
+  clean_names() %>% 
+  rename(strip = strip_no,
+         quad = quad_no) %>% 
+  mutate(site = 2, aspect = "staging area", orientation = "south") %>% 
+  drop_na(cover)  #remove all species not observed  
+
+sa2n_june_clean <- sa2n_june %>% 
+  drop_na(Species) %>% # remove n/a row
+  rotate_df() %>% 
+  row_to_names(row_number = 1) %>% #name rows with values from row 1 (species)
+  rownames_to_column() %>% 
+  mutate(rowname = case_when(grepl("No.", rowname) ~ "Number",
+                           grepl("Cov.", rowname) ~ "Cover")) %>% #rename values to regular words
+  pivot_longer(cols = ACMAME:HIRINC,
+              names_to = "species",
+              values_to = "values") %>% #elongate df with species as values, not columns
+  pivot_wider(names_from = "rowname",
+              values_from = "values") %>% #create columns for number and cover
+  clean_names() %>% 
+  rename(strip = strip_no,
+         quad = quad_no) %>% 
+  mutate(site = 2, aspect = "staging area", orientation = "north") %>% 
+  drop_na(cover)  #remove all species not observed  
+
+sa2_full <- merge_df(sa2_june_clean, sa2s_june_clean, sa2n_june_clean)
+
+#Flat 2 Wrangling
+fl2_june_clean <- fl2_june %>% 
+  drop_na(Species) %>% # remove n/a row
+  rotate_df() %>% 
+  row_to_names(row_number = 1) %>% #name rows with values from row 1 (species)
+  rownames_to_column() %>% 
+  mutate(rowname = case_when(grepl("No.", rowname) ~ "Number",
+                           grepl("Cov.", rowname) ~ "Cover")) %>% #rename values to regular words
+  pivot_longer(cols = ACMAME:HIRINC,
+              names_to = "species",
+              values_to = "values") %>% #elongate df with species as values, not columns
+  pivot_wider(names_from = "rowname",
+              values_from = "values") %>% #create columns for number and cover
+  clean_names() %>% 
+  rename(strip = strip_no,
+         quad = quad_no) %>% 
+  mutate(site = 2, aspect = "flat", orientation = "central") %>% 
+  drop_na(cover)  #remove all species not observed  
+
+fl2e_june_clean <- fl2e_june %>% 
+  drop_na(Species) %>% # remove n/a row
+  rotate_df() %>% 
+  row_to_names(row_number = 1) %>% #name rows with values from row 1 (species)
+  rownames_to_column() %>% 
+  mutate(rowname = case_when(grepl("No.", rowname) ~ "Number",
+                           grepl("Cov.", rowname) ~ "Cover")) %>% #rename values to regular words
+  pivot_longer(cols = ACMAME:HIRINC,
+              names_to = "species",
+              values_to = "values") %>% #elongate df with species as values, not columns
+  pivot_wider(names_from = "rowname",
+              values_from = "values") %>% #create columns for number and cover
+  clean_names() %>% 
+  rename(strip = strip_no,
+         quad = quad_no) %>% 
+  mutate(site = 2, aspect = "flat", orientation = "east") %>% 
+  drop_na(cover)  #remove all species not observed  
+
+fl2w_june_clean <- fl2w_june %>% 
+  drop_na(Species) %>% # remove n/a row
+  rotate_df() %>% 
+  row_to_names(row_number = 1) %>% #name rows with values from row 1 (species)
+  rownames_to_column() %>% 
+  mutate(rowname = case_when(grepl("No.", rowname) ~ "Number",
+                           grepl("Cov.", rowname) ~ "Cover")) %>% #rename values to regular words
+  pivot_longer(cols = ACMAME:HIRINC,
+              names_to = "species",
+              values_to = "values") %>% #elongate df with species as values, not columns
+  pivot_wider(names_from = "rowname",
+              values_from = "values") %>% #create columns for number and cover
+  clean_names() %>% 
+  rename(strip = strip_no,
+         quad = quad_no) %>% 
+  mutate(site = 2, aspect = "flat", orientation = "west") %>% 
+  drop_na(cover)  #remove all species not observed  
+
+fl2_full <- merge_df(fl2_june_clean, fl2e_june_clean, fl2w_june_clean)
+
+#Slope 2 Wrangling
+sl2_june_clean <- sl2_june %>% 
+  drop_na(Species) %>% # remove n/a row
+  rotate_df() %>% 
+  row_to_names(row_number = 1) %>% #name rows with values from row 1 (species)
+  rownames_to_column() %>% 
+  mutate(rowname = case_when(grepl("No.", rowname) ~ "Number",
+                           grepl("Cov.", rowname) ~ "Cover")) %>% #rename values to regular words
+  pivot_longer(cols = ACMAME:HIRINC,
+              names_to = "species",
+              values_to = "values") %>% #elongate df with species as values, not columns
+  pivot_wider(names_from = "rowname",
+              values_from = "values") %>% #create columns for number and cover
+  clean_names() %>% 
+  rename(strip = strip_no,
+         quad = quad_no) %>% 
+  mutate(site = 2, aspect = "slope", orientation = "central") %>% 
+  drop_na(cover)  #remove all species not observed  
+
+sl2n_june_clean <- sl2n_june %>% 
+  drop_na(Species) %>% # remove n/a row
+  rotate_df() %>% 
+  row_to_names(row_number = 1) %>% #name rows with values from row 1 (species)
+  rownames_to_column() %>% 
+  mutate(rowname = case_when(grepl("No.", rowname) ~ "Number",
+                           grepl("Cov.", rowname) ~ "Cover")) %>% #rename values to regular words
+  pivot_longer(cols = ACMAME:HIRINC,
+              names_to = "species",
+              values_to = "values") %>% #elongate df with species as values, not columns
+  pivot_wider(names_from = "rowname",
+              values_from = "values") %>% #create columns for number and cover
+  clean_names() %>% 
+  rename(strip = strip_no,
+         quad = quad_no) %>% 
+  mutate(site = 2, aspect = "slope", orientation = "north") %>% 
+  drop_na(cover)  #remove all species not observed  
+
+sl2s_june_clean <- sl2s_june %>% 
+  drop_na(Species) %>% # remove n/a row
+  rotate_df() %>% 
+  row_to_names(row_number = 1) %>% #name rows with values from row 1 (species)
+  rownames_to_column() %>% 
+  mutate(rowname = case_when(grepl("No.", rowname) ~ "Number",
+                           grepl("Cov.", rowname) ~ "Cover")) %>% #rename values to regular words
+  pivot_longer(cols = ACMAME:HIRINC,
+              names_to = "species",
+              values_to = "values") %>% #elongate df with species as values, not columns
+  pivot_wider(names_from = "rowname",
+              values_from = "values") %>% #create columns for number and cover
+  clean_names() %>% 
+  rename(strip = strip_no,
+         quad = quad_no) %>% 
+  mutate(site = 2, aspect = "slope", orientation = "south") %>% 
+  drop_na(cover)  #remove all species not observed  
+
+sl2_full <- merge_df(sl2_june_clean, sl2n_june_clean, sl2s_june_clean)
+
+#Staging Area 3 Wrangling
+sa3_june_clean <- sa3_june %>% 
+  drop_na(Species) %>% # remove n/a row
+  rotate_df() %>% 
+  row_to_names(row_number = 1) %>% #name rows with values from row 1 (species)
+  rownames_to_column() %>% 
+  mutate(rowname = case_when(grepl("No.", rowname) ~ "Number",
+                           grepl("Cov.", rowname) ~ "Cover")) %>% #rename values to regular words
+  pivot_longer(cols = ACMAME:HIRINC,
+              names_to = "species",
+              values_to = "values") %>% #elongate df with species as values, not columns
+  pivot_wider(names_from = "rowname",
+              values_from = "values") %>% #create columns for number and cover
+  clean_names() %>% 
+  rename(strip = strip_no,
+         quad = quad_no) %>% 
+  mutate(site = 3, aspect = "staging area", orientation = "central") %>% 
+  drop_na(cover)  #remove all species not observed  
+
+sa3e_june_clean <- sa3e_june %>% 
+  drop_na(Species) %>% # remove n/a row
+  rotate_df() %>% 
+  row_to_names(row_number = 1) %>% #name rows with values from row 1 (species)
+  rownames_to_column() %>% 
+  mutate(rowname = case_when(grepl("No.", rowname) ~ "Number",
+                           grepl("Cov.", rowname) ~ "Cover")) %>% #rename values to regular words
+  pivot_longer(cols = ACMAME:HIRINC,
+              names_to = "species",
+              values_to = "values") %>% #elongate df with species as values, not columns
+  pivot_wider(names_from = "rowname",
+              values_from = "values") %>% #create columns for number and cover
+  clean_names() %>% 
+  rename(strip = strip_no,
+         quad = quad_no) %>% 
+  mutate(site = 3, aspect = "staging area", orientation = "east") %>% 
+  drop_na(cover)  #remove all species not observed  
+
+sa3w_june_clean <- sa3w_june %>% 
+  drop_na(Species) %>% # remove n/a row
+  rotate_df() %>% 
+  row_to_names(row_number = 1) %>% #name rows with values from row 1 (species)
+  rownames_to_column() %>% 
+  mutate(rowname = case_when(grepl("No.", rowname) ~ "Number",
+                           grepl("Cov.", rowname) ~ "Cover")) %>% #rename values to regular words
+  pivot_longer(cols = ACMAME:HIRINC,
+              names_to = "species",
+              values_to = "values") %>% #elongate df with species as values, not columns
+  pivot_wider(names_from = "rowname",
+              values_from = "values") %>% #create columns for number and cover
+  clean_names() %>% 
+  rename(strip = strip_no,
+         quad = quad_no) %>% 
+  mutate(site = 3, aspect = "staging area", orientation = "west") %>% 
+  drop_na(cover)  #remove all species not observed  
+
+sa3_full <- merge_df(sa3_june_clean, sa3e_june_clean, sa3w_june_clean)
+
+#Flat 3 Wrangling - not collected yet
+
+
+#Slope 3 Wrangling
+sl3_june_clean <- sl3_june %>% 
+  drop_na(Species) %>% # remove n/a row
+  rotate_df() %>% 
+  row_to_names(row_number = 1) %>% #name rows with values from row 1 (species)
+  rownames_to_column() %>% 
+  mutate(rowname = case_when(grepl("No.", rowname) ~ "Number",
+                           grepl("Cov.", rowname) ~ "Cover")) %>% #rename values to regular words
+  pivot_longer(cols = ACMAME:HIRINC,
+              names_to = "species",
+              values_to = "values") %>% #elongate df with species as values, not columns
+  pivot_wider(names_from = "rowname",
+              values_from = "values") %>% #create columns for number and cover
+  clean_names() %>% 
+  rename(strip = strip_no,
+         quad = quad_no) %>% 
+  mutate(site = 3, aspect = "slope", orientation = "central") %>% 
+  drop_na(cover)  #remove all species not observed  
+
+sl3e_june_clean <- sl3e_june %>% 
+  drop_na(Species) %>% # remove n/a row
+  rotate_df() %>% 
+  row_to_names(row_number = 1) %>% #name rows with values from row 1 (species)
+  rownames_to_column() %>% 
+  mutate(rowname = case_when(grepl("No.", rowname) ~ "Number",
+                           grepl("Cov.", rowname) ~ "Cover")) %>% #rename values to regular words
+  pivot_longer(cols = ACMAME:HIRINC,
+              names_to = "species",
+              values_to = "values") %>% #elongate df with species as values, not columns
+  pivot_wider(names_from = "rowname",
+              values_from = "values") %>% #create columns for number and cover
+  clean_names() %>% 
+  rename(strip = strip_no,
+         quad = quad_no) %>% 
+  mutate(site = 3, aspect = "slope", orientation = "east") %>% 
+  drop_na(cover)  #remove all species not observed  
+
+sl3w_june_clean <- sl3w_june %>% 
+  drop_na(Species) %>% # remove n/a row
+  rotate_df() %>% 
+  row_to_names(row_number = 1) %>% #name rows with values from row 1 (species)
+  rownames_to_column() %>% 
+  mutate(rowname = case_when(grepl("No.", rowname) ~ "Number",
+                           grepl("Cov.", rowname) ~ "Cover")) %>% #rename values to regular words
+  pivot_longer(cols = ACMAME:HIRINC,
+              names_to = "species",
+              values_to = "values") %>% #elongate df with species as values, not columns
+  pivot_wider(names_from = "rowname",
+              values_from = "values") %>% #create columns for number and cover
+  clean_names() %>% 
+  rename(strip = strip_no,
+         quad = quad_no) %>% 
+  mutate(site = 3, aspect = "slope", orientation = "west") %>% 
+  drop_na(cover)  #remove all species not observed  
+
+sl3_full <- merge_df(sl3_june_clean, sl3e_june_clean, sl3w_june_clean)
+
+#Staging Area 4 Wrangling
+sa4_june_clean <- sa4_june %>% 
+  drop_na(Species) %>% # remove n/a row
+  rotate_df() %>% 
+  row_to_names(row_number = 1) %>% #name rows with values from row 1 (species)
+  rownames_to_column() %>% 
+  mutate(rowname = case_when(grepl("No.", rowname) ~ "Number",
+                           grepl("Cov.", rowname) ~ "Cover")) %>% #rename values to regular words
+  pivot_longer(cols = ACMAME:HIRINC,
+              names_to = "species",
+              values_to = "values") %>% #elongate df with species as values, not columns
+  pivot_wider(names_from = "rowname",
+              values_from = "values") %>% #create columns for number and cover
+  clean_names() %>% 
+  rename(strip = strip_no,
+         quad = quad_no) %>% 
+  mutate(site = 4, aspect = "staging area", orientation = "central") %>% 
+  drop_na(cover)  #remove all species not observed  
+
+sa4e_june_clean <- sa4e_june %>% 
+  drop_na(Species) %>% # remove n/a row
+  rotate_df() %>% 
+  row_to_names(row_number = 1) %>% #name rows with values from row 1 (species)
+  rownames_to_column() %>% 
+  mutate(rowname = case_when(grepl("No.", rowname) ~ "Number",
+                           grepl("Cov.", rowname) ~ "Cover")) %>% #rename values to regular words
+  pivot_longer(cols = ACMAME:HIRINC,
+              names_to = "species",
+              values_to = "values") %>% #elongate df with species as values, not columns
+  pivot_wider(names_from = "rowname",
+              values_from = "values") %>% #create columns for number and cover
+  clean_names() %>% 
+  rename(strip = strip_no,
+         quad = quad_no) %>% 
+  mutate(site = 4, aspect = "staging area", orientation = "east") %>% 
+  drop_na(cover)  #remove all species not observed  
+
+sa4_full <- merge_df(sa4_june_clean, sa4e_june_clean)
+
+#Staging Area 6 - not collected yet
+```
+
