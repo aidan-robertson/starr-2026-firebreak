@@ -767,8 +767,6 @@ ggplot(all_june_classified) +
 ```
 
 
-
-
 #Nov Data Read In
 ```{r}
 #Staging Area 1
@@ -1488,36 +1486,43 @@ all_nov_classified <- merge(all_nov, species_class, by = "species")
 ```
 
 
+
 #Comparison Nov/June
 ```{r}
 all_all <- merge_df(all_nov_classified, all_june_classified) %>% 
-  dplyr::mutate(month = fct_relevel(month, "November", "June"))
+   mutate(class = case_when(
+    class == "native" ~ "Native",
+    class == "non-native" ~ "Non-Native",
+    class == "bare ground" ~ "Bare Ground")) %>% 
+  dplyr::mutate(month = fct_relevel(month, "November", "June"),
+                class = fct_relevel(class, "Native", "Non-Native", "Bare Ground"))
 
 all_sumcover <- all_all %>% group_by(year, month, status, orientation, strip, quad, class) %>% summarise(sumcover = sum(as.numeric(as.character(cover))))
-
-all_sumcover_nobg <- all_sumcover %>% filter(!class == "bare ground")
-
-fl1_sumcover <- all_sumcover_nobg %>%  filter(status == "Flat 1") %>% 
-  mutate(class = case_when(
-    class == "native" ~ "Native",
-    class == "non-native" ~ "Non-Native"))
-
-ggplot(fl1_sumcover) +
-  aes(y = sumcover, x = class, color = class ) +
-  geom_boxplot() +
-  facet_wrap(~month, ncol = 3, scales = "free") +
- # geom_point(position=position_jitterdodge(
-  # jitter.width = 0,
-  # jitter.height = 0,
-  #  seed = NULL),
-  #          alpha = 0.3) +
-  scale_color_manual(values = c("#e52e39", "#38A800")) +
-  labs(x = "Aspect",
-       y = "Cover",
-       color = "Cover Type") +
-  ggtitle("Flat 1") +
-  theme_minimal() +
-  theme(plot.title = element_text(hjust = 0.5))
 ```
 
+
+
+
+#Figures - Sum Cover
+```{r}
+#Figure Base
+sa4_sumcover <- all_sumcover %>%  filter(status == "Staging Area 4") 
+
+ggplot(sa4_sumcover) +
+  aes(y = sumcover, x = class, color = class) +
+  geom_boxplot() +
+  facet_wrap(~month, scales = "fixed") +
+  #geom_point(position=position_jitterdodge(
+   #jitter.width = 0,
+   #jitter.height = 0,
+   # seed = NULL),
+    #        alpha = 0.3) +
+  scale_color_manual(values = c("#38A800", "#e52e39", "#888")) +
+  labs(x = NULL,
+       y = "Cover") +
+  ggtitle("Staging Area 4") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(legend.position = "none")
+```
 
