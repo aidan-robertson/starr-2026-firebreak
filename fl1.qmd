@@ -231,7 +231,7 @@ sa1_june_clean <- sa1_june %>%
   clean_names() %>% 
   rename(strip = strip_no,
          quad = quad_no) %>% 
-  mutate(site = 1, aspect = "staging area", orientation = "central") %>% 
+  mutate(site = 1, aspect = "staging area", orientation = "central", month = "June", year = "2026") %>% 
   drop_na(cover)  #remove all species not observed  
 
 sa1s_june_clean <- sa1s_june %>% 
@@ -249,7 +249,7 @@ sa1s_june_clean <- sa1s_june %>%
   clean_names() %>% 
   rename(strip = strip_no,
          quad = quad_no) %>% 
-  mutate(site = 1, aspect = "staging area", orientation = "south") %>% 
+  mutate(site = 1, aspect = "staging area", orientation = "south", month = "June", year = "2026") %>% 
   drop_na(cover)  #remove all species not observed  
 
 sa1n_june_clean <- sa1n_june %>% 
@@ -267,7 +267,7 @@ sa1n_june_clean <- sa1n_june %>%
   clean_names() %>% 
   rename(strip = strip_no,
          quad = quad_no) %>% 
-  mutate(site = 1, aspect = "staging area", orientation = "north") %>% 
+  mutate(site = 1, aspect = "staging area", orientation = "north", month = "June", year = "2026") %>% 
   drop_na(cover)  #remove all species not observed  
 
 sa1_full <- merge_df(sa1_june_clean, sa1s_june_clean, sa1n_june_clean)
@@ -288,7 +288,7 @@ fl1_june_clean <- fl1_june %>%
   clean_names() %>% 
   rename(strip = strip_no,
          quad = quad_no) %>% 
-  mutate(site = 1, aspect = "flat", orientation = "central") %>% 
+  mutate(site = 1, aspect = "flat", orientation = "central", month = "June", year = "2026") %>% 
   drop_na(cover)  #remove all species not observed  
 
 fl1s_june_clean <- fl1s_june %>% 
@@ -306,7 +306,7 @@ fl1s_june_clean <- fl1s_june %>%
   clean_names() %>% 
   rename(strip = strip_no,
          quad = quad_no) %>% 
-  mutate(site = 1, aspect = "flat", orientation = "south") %>% 
+  mutate(site = 1, aspect = "flat", orientation = "south", month = "June", year = "2026") %>% 
   drop_na(cover)  #remove all species not observed  
 
 fl1n_june_clean <- fl1n_june %>% 
@@ -324,7 +324,7 @@ fl1n_june_clean <- fl1n_june %>%
   clean_names() %>% 
   rename(strip = strip_no,
          quad = quad_no) %>% 
-  mutate(site = 1, aspect = "flat", orientation = "north") %>% 
+  mutate(site = 1, aspect = "flat", orientation = "north", month = "June", year = "2026") %>% 
   drop_na(cover)  #remove all species not observed  
 
 fl1_full <- merge_df(fl1_june_clean, fl1s_june_clean, fl1n_june_clean)
@@ -345,7 +345,7 @@ sl1_june_clean <- sl1_june %>%
   clean_names() %>% 
   rename(strip = strip_no,
          quad = quad_no) %>% 
-  mutate(site = 1, aspect = "slope", orientation = "central") %>% 
+  mutate(site = 1, aspect = "slope", orientation = "central", month = "June", year = "2026") %>% 
   drop_na(cover)  #remove all species not observed  
 
 sl1e_june_clean <- sl1e_june %>% 
@@ -363,7 +363,7 @@ sl1e_june_clean <- sl1e_june %>%
   clean_names() %>% 
   rename(strip = strip_no,
          quad = quad_no) %>% 
-  mutate(site = 1, aspect = "slope", orientation = "east") %>% 
+  mutate(site = 1, aspect = "slope", orientation = "east", month = "June", year = "2026") %>% 
   drop_na(cover)  #remove all species not observed  
 
 sl1w_june_clean <- sl1w_june %>% 
@@ -381,7 +381,7 @@ sl1w_june_clean <- sl1w_june %>%
   clean_names() %>% 
   rename(strip = strip_no,
          quad = quad_no) %>% 
-  mutate(site = 1, aspect = "slope", orientation = "west") %>% 
+  mutate(site = 1, aspect = "slope", orientation = "west", month = "June", year = "2026") %>% 
   drop_na(cover)  #remove all species not observed  
 
 sl1_full <- merge_df(sl1_june_clean, sl1e_june_clean, sl1w_june_clean)
@@ -402,7 +402,7 @@ sa2_june_clean <- sa2_june %>%
   clean_names() %>% 
   rename(strip = strip_no,
          quad = quad_no) %>% 
-  mutate(site = 2, aspect = "staging area", orientation = "central") %>% 
+  mutate(site = 2, aspect = "staging area", orientation = "central", month = "June", year = "2026") %>% 
   drop_na(cover)  #remove all species not observed  
 
 sa2s_june_clean <- sa2s_june %>% 
@@ -420,7 +420,7 @@ sa2s_june_clean <- sa2s_june %>%
   clean_names() %>% 
   rename(strip = strip_no,
          quad = quad_no) %>% 
-  mutate(site = 2, aspect = "staging area", orientation = "south") %>% 
+  mutate(site = 2, aspect = "staging area", orientation = "south", month = "June", year = "2026") %>% 
   drop_na(cover)  #remove all species not observed  
 
 sa2n_june_clean <- sa2n_june %>% 
@@ -438,7 +438,7 @@ sa2n_june_clean <- sa2n_june %>%
   clean_names() %>% 
   rename(strip = strip_no,
          quad = quad_no) %>% 
-  mutate(site = 2, aspect = "staging area", orientation = "north") %>% 
+  mutate(site = 2, aspect = "staging area", orientation = "north", month = "June", year = "2026") %>% 
   drop_na(cover)  #remove all species not observed  
 
 sa2_full <- merge_df(sa2_june_clean, sa2s_june_clean, sa2n_june_clean)
@@ -459,7 +459,7 @@ fl2_june_clean <- fl2_june %>%
   clean_names() %>% 
   rename(strip = strip_no,
          quad = quad_no) %>% 
-  mutate(site = 2, aspect = "flat", orientation = "central") %>% 
+  mutate(site = 2, aspect = "flat", orientation = "central", month = "June", year = "2026") %>% 
   drop_na(cover)  #remove all species not observed  
 
 fl2e_june_clean <- fl2e_june %>% 
@@ -477,7 +477,7 @@ fl2e_june_clean <- fl2e_june %>%
   clean_names() %>% 
   rename(strip = strip_no,
          quad = quad_no) %>% 
-  mutate(site = 2, aspect = "flat", orientation = "east") %>% 
+  mutate(site = 2, aspect = "flat", orientation = "east", month = "June", year = "2026") %>% 
   drop_na(cover)  #remove all species not observed  
 
 fl2w_june_clean <- fl2w_june %>% 
@@ -495,7 +495,7 @@ fl2w_june_clean <- fl2w_june %>%
   clean_names() %>% 
   rename(strip = strip_no,
          quad = quad_no) %>% 
-  mutate(site = 2, aspect = "flat", orientation = "west") %>% 
+  mutate(site = 2, aspect = "flat", orientation = "west", month = "June", year = "2026") %>% 
   drop_na(cover)  #remove all species not observed  
 
 fl2_full <- merge_df(fl2_june_clean, fl2e_june_clean, fl2w_june_clean)
@@ -516,7 +516,7 @@ sl2_june_clean <- sl2_june %>%
   clean_names() %>% 
   rename(strip = strip_no,
          quad = quad_no) %>% 
-  mutate(site = 2, aspect = "slope", orientation = "central") %>% 
+  mutate(site = 2, aspect = "slope", orientation = "central", month = "June", year = "2026") %>% 
   drop_na(cover)  #remove all species not observed  
 
 sl2n_june_clean <- sl2n_june %>% 
@@ -534,7 +534,7 @@ sl2n_june_clean <- sl2n_june %>%
   clean_names() %>% 
   rename(strip = strip_no,
          quad = quad_no) %>% 
-  mutate(site = 2, aspect = "slope", orientation = "north") %>% 
+  mutate(site = 2, aspect = "slope", orientation = "north", month = "June", year = "2026") %>% 
   drop_na(cover)  #remove all species not observed  
 
 sl2s_june_clean <- sl2s_june %>% 
@@ -552,7 +552,7 @@ sl2s_june_clean <- sl2s_june %>%
   clean_names() %>% 
   rename(strip = strip_no,
          quad = quad_no) %>% 
-  mutate(site = 2, aspect = "slope", orientation = "south") %>% 
+  mutate(site = 2, aspect = "slope", orientation = "south", month = "June", year = "2026") %>% 
   drop_na(cover)  #remove all species not observed  
 
 sl2_full <- merge_df(sl2_june_clean, sl2n_june_clean, sl2s_june_clean)
@@ -573,7 +573,7 @@ sa3_june_clean <- sa3_june %>%
   clean_names() %>% 
   rename(strip = strip_no,
          quad = quad_no) %>% 
-  mutate(site = 3, aspect = "staging area", orientation = "central") %>% 
+  mutate(site = 3, aspect = "staging area", orientation = "central", month = "June", year = "2026") %>% 
   drop_na(cover)  #remove all species not observed  
 
 sa3e_june_clean <- sa3e_june %>% 
@@ -591,7 +591,7 @@ sa3e_june_clean <- sa3e_june %>%
   clean_names() %>% 
   rename(strip = strip_no,
          quad = quad_no) %>% 
-  mutate(site = 3, aspect = "staging area", orientation = "east") %>% 
+  mutate(site = 3, aspect = "staging area", orientation = "east", month = "June", year = "2026") %>% 
   drop_na(cover)  #remove all species not observed  
 
 sa3w_june_clean <- sa3w_june %>% 
@@ -609,7 +609,7 @@ sa3w_june_clean <- sa3w_june %>%
   clean_names() %>% 
   rename(strip = strip_no,
          quad = quad_no) %>% 
-  mutate(site = 3, aspect = "staging area", orientation = "west") %>% 
+  mutate(site = 3, aspect = "staging area", orientation = "west", month = "June", year = "2026") %>% 
   drop_na(cover)  #remove all species not observed  
 
 sa3_full <- merge_df(sa3_june_clean, sa3e_june_clean, sa3w_june_clean)
@@ -633,7 +633,7 @@ sl3_june_clean <- sl3_june %>%
   clean_names() %>% 
   rename(strip = strip_no,
          quad = quad_no) %>% 
-  mutate(site = 3, aspect = "slope", orientation = "central") %>% 
+  mutate(site = 3, aspect = "slope", orientation = "central", month = "June", year = "2026") %>% 
   drop_na(cover)  #remove all species not observed  
 
 sl3e_june_clean <- sl3e_june %>% 
@@ -651,7 +651,7 @@ sl3e_june_clean <- sl3e_june %>%
   clean_names() %>% 
   rename(strip = strip_no,
          quad = quad_no) %>% 
-  mutate(site = 3, aspect = "slope", orientation = "east") %>% 
+  mutate(site = 3, aspect = "slope", orientation = "east", month = "June", year = "2026") %>% 
   drop_na(cover)  #remove all species not observed  
 
 sl3w_june_clean <- sl3w_june %>% 
@@ -669,7 +669,7 @@ sl3w_june_clean <- sl3w_june %>%
   clean_names() %>% 
   rename(strip = strip_no,
          quad = quad_no) %>% 
-  mutate(site = 3, aspect = "slope", orientation = "west") %>% 
+  mutate(site = 3, aspect = "slope", orientation = "west", month = "June", year = "2026") %>% 
   drop_na(cover)  #remove all species not observed  
 
 sl3_full <- merge_df(sl3_june_clean, sl3e_june_clean, sl3w_june_clean)
@@ -690,7 +690,7 @@ sa4_june_clean <- sa4_june %>%
   clean_names() %>% 
   rename(strip = strip_no,
          quad = quad_no) %>% 
-  mutate(site = 4, aspect = "staging area", orientation = "central") %>% 
+  mutate(site = 4, aspect = "staging area", orientation = "central", month = "June", year = "2026") %>% 
   drop_na(cover)  #remove all species not observed  
 
 sa4e_june_clean <- sa4e_june %>% 
@@ -708,7 +708,7 @@ sa4e_june_clean <- sa4e_june %>%
   clean_names() %>% 
   rename(strip = strip_no,
          quad = quad_no) %>% 
-  mutate(site = 4, aspect = "staging area", orientation = "east") %>% 
+  mutate(site = 4, aspect = "staging area", orientation = "east", month = "June", year = "2026") %>% 
   drop_na(cover)  #remove all species not observed  
 
 sa4_full <- merge_df(sa4_june_clean, sa4e_june_clean)
@@ -1485,6 +1485,39 @@ write_xlsx(species_list_nov, "species_list_nov.xlsx")
 species_class <- read_xlsx(path = here("data", "species_list_nov_classified.xlsx"))
 
 all_nov_classified <- merge(all_nov, species_class, by = "species")
+```
+
+
+#Comparison Nov/June
+```{r}
+all_all <- merge_df(all_nov_classified, all_june_classified) %>% 
+  dplyr::mutate(month = fct_relevel(month, "November", "June"))
+
+all_sumcover <- all_all %>% group_by(year, month, status, orientation, strip, quad, class) %>% summarise(sumcover = sum(as.numeric(as.character(cover))))
+
+all_sumcover_nobg <- all_sumcover %>% filter(!class == "bare ground")
+
+fl1_sumcover <- all_sumcover_nobg %>%  filter(status == "Flat 1") %>% 
+  mutate(class = case_when(
+    class == "native" ~ "Native",
+    class == "non-native" ~ "Non-Native"))
+
+ggplot(fl1_sumcover) +
+  aes(y = sumcover, x = class, color = class ) +
+  geom_boxplot() +
+  facet_wrap(~month, ncol = 3, scales = "free") +
+ # geom_point(position=position_jitterdodge(
+  # jitter.width = 0,
+  # jitter.height = 0,
+  #  seed = NULL),
+  #          alpha = 0.3) +
+  scale_color_manual(values = c("#e52e39", "#38A800")) +
+  labs(x = "Aspect",
+       y = "Cover",
+       color = "Cover Type") +
+  ggtitle("Flat 1") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
 ```
 
 
