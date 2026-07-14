@@ -1500,12 +1500,8 @@ all_all <- merge_df(all_nov_classified, all_june_classified) %>%
 all_sumcover <- all_all %>% group_by(year, month, status, orientation, strip, quad, class) %>% summarise(sumcover = sum(as.numeric(as.character(cover))))
 ```
 
-
-
-
 #Figures - Sum Cover
 ```{r}
-#Figure Base
 sa4_sumcover <- all_sumcover %>%  filter(status == "Staging Area 4") 
 
 ggplot(sa4_sumcover) +
@@ -1513,10 +1509,10 @@ ggplot(sa4_sumcover) +
   geom_boxplot() +
   facet_wrap(~month, scales = "fixed") +
   #geom_point(position=position_jitterdodge(
-   #jitter.width = 0,
-   #jitter.height = 0,
+  # jitter.width = 0,
+  # jitter.height = 0,
    # seed = NULL),
-    #        alpha = 0.3) +
+   # alpha = 0.3) +
   scale_color_manual(values = c("#38A800", "#e52e39", "#888")) +
   labs(x = NULL,
        y = "Cover") +
@@ -1524,5 +1520,32 @@ ggplot(sa4_sumcover) +
   theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5)) +
   theme(legend.position = "none")
+```
+
+
+
+#Most Abundant Species
+```{r}
+nn_cover <- all_all %>% filter(class == "Non-Native") %>% 
+  group_by(month, status, species) %>% mutate(species = case_when(
+             species == "ERO spp" ~ "ERO Spp",
+             .default = species)) %>% 
+  summarise(nncover = sum(as.numeric(as.character(cover))))
+
+nn_sum_cover <- nn_cover %>% group_by(status, month) %>% summarise(sum_cover = sum(nncover))
+
+nonnative_cover <- merge(nn_cover, nn_sum_cover) %>% mutate(cover_ratio = (as.numeric(as.character(nncover))/sum_cover)*100)
+
+nn_species_list <- all_all %>% filter(class == "Non-Native") %>% mutate(species = case_when(
+             species == "ERO Spp" ~ "ERO spp",
+             .default = species)) %>% dplyr::select(species) %>%  distinct()
+
+nn_fl1 <- nonnative_cover %>% filter(status == "Flat 1")
+
+ggplot(nn_fl1) +
+  aes(x = status, y = cover_ratio, fill = species) +
+  geom_col() +
+  facet_wrap(~month) +
+  theme_minimal() 
 ```
 
