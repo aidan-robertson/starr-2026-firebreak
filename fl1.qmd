@@ -9,6 +9,7 @@ install.packages(c("tidyverse", "readxl", "janitor", "here"))
 install.packages(c("cars", "effectsize", "rstatix"))
 install.packages("sjmisc")
 install.packages("writexl")
+install.packages("paletteer")
 ```
 
 
@@ -25,6 +26,7 @@ library(effectsize) # assess effect size
 library(rstatix) # anova, kruskal wallis
 library(sjmisc)
 library(writexl)
+library(paletteer)
 ```
 
 #June FL1 Read Data - TEST
@@ -738,12 +740,18 @@ species_list <- june %>% dplyr::select(species) %>% distinct()
 
 write_xlsx(species_list, "species_list_june.xlsx")
 
-species_class <- read_xlsx(path = here("data", "species_june_classified.xlsx"))
-```
+species_class_june <- read_xlsx(path = here("data", "species_june_classified.xlsx")) 
 
-#Merge DFs (all june & classified species)
-```{r}
-all_june_classified <- merge(all_june, species_class, by = "species")
+all_june_classified <- merge(all_june, species_class_june, by = "species") %>% 
+  mutate(species = case_when(
+             species == "ERO Spp" ~ "ERO spp",
+             species == "PLATIN" ~ "PLATEN",
+             species == "PLANTIN" ~ "PLATEN",
+             species == "LUPspp." ~ "LUP spp",
+             species == "UNK ERI" ~ "UNKERI",
+             species == "CALWEE" ~ "PAECAL",
+             species == "STEUIR" ~ "STEVIR",
+             .default = species))
 ```
 
 #June Plotting N/NN
@@ -1480,9 +1488,13 @@ species_list_nov <- nov %>% dplyr::select(species) %>% distinct()
 
 write_xlsx(species_list_nov, "species_list_nov.xlsx")
 
-species_class <- read_xlsx(path = here("data", "species_list_nov_classified.xlsx"))
+species_class_nov <- read_xlsx(path = here("data", "species_list_nov_classified.xlsx"))
 
-all_nov_classified <- merge(all_nov, species_class, by = "species")
+all_nov_classified <- merge(all_nov, species_class_nov, by = "species") %>% 
+    mutate(species = case_when(
+             species == "LUP sp." ~ "LUP spp",
+             species == "LUP Sp." ~ "LUP spp",
+             .default = species))
 ```
 
 
@@ -1526,26 +1538,25 @@ ggplot(sa4_sumcover) +
 
 #Most Abundant Species
 ```{r}
-nn_cover <- all_all %>% filter(class == "Non-Native") %>% 
-  group_by(month, status, species) %>% mutate(species = case_when(
-             species == "ERO spp" ~ "ERO Spp",
-             .default = species)) %>% 
+nn_cover <- all_all %>% filter(class == "Non-Native") %>% group_by(status, month, species) %>% 
   summarise(nncover = sum(as.numeric(as.character(cover))))
 
 nn_sum_cover <- nn_cover %>% group_by(status, month) %>% summarise(sum_cover = sum(nncover))
 
 nonnative_cover <- merge(nn_cover, nn_sum_cover) %>% mutate(cover_ratio = (as.numeric(as.character(nncover))/sum_cover)*100)
 
-nn_species_list <- all_all %>% filter(class == "Non-Native") %>% mutate(species = case_when(
-             species == "ERO Spp" ~ "ERO spp",
-             .default = species)) %>% dplyr::select(species) %>%  distinct()
+nn_species_list <- all_all %>% filter(class == "Non-Native") %>% dplyr::select(species) %>%  distinct()
 
-nn_fl1 <- nonnative_cover %>% filter(status == "Flat 1")
+nn_sa3 <- nonnative_cover %>% filter(status == "Staging Area 3")
 
-ggplot(nn_fl1) +
+
+ggplot(nn_sa3) +
   aes(x = status, y = cover_ratio, fill = species) +
   geom_col() +
-  facet_wrap(~month) +
+  facet_wrap(~month) + 
+  scale_fill_paletteer_d("ggthemes::Miller_Stone") +
   theme_minimal() 
+
+
 ```
 
