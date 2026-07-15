@@ -1497,8 +1497,6 @@ all_nov_classified <- merge(all_nov, species_class_nov, by = "species") %>%
              .default = species))
 ```
 
-
-
 #Comparison Nov/June
 ```{r}
 all_all <- merge_df(all_nov_classified, all_june_classified) %>% 
@@ -1534,9 +1532,7 @@ ggplot(sa4_sumcover) +
   theme(legend.position = "none")
 ```
 
-
-
-#Most Abundant Species
+#Figures - Most Abundant NN Species
 ```{r}
 nn_cover <- all_all %>% filter(class == "Non-Native") %>% group_by(status, month, species) %>% 
   summarise(nncover = sum(as.numeric(as.character(cover))))
@@ -1547,16 +1543,42 @@ nonnative_cover <- merge(nn_cover, nn_sum_cover) %>% mutate(cover_ratio = (as.nu
 
 nn_species_list <- all_all %>% filter(class == "Non-Native") %>% dplyr::select(species) %>%  distinct()
 
-nn_sa3 <- nonnative_cover %>% filter(status == "Staging Area 3")
+nn_sa4 <- nonnative_cover %>% filter(status == "Staging Area 4")
 
+ggplot(nn_sa4) +
+  aes(x = month, y = cover_ratio, fill = species) +
+  geom_col()  + 
+  scale_fill_paletteer_d("rcartocolor::Vivid") +
+  labs(x = NULL,
+       y = "% of Non-Native Cover",
+       fill = "Species") +
+  ggtitle("Staging Area 4") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
 
-ggplot(nn_sa3) +
-  aes(x = status, y = cover_ratio, fill = species) +
-  geom_col() +
-  facet_wrap(~month) + 
-  scale_fill_paletteer_d("ggthemes::Miller_Stone") +
-  theme_minimal() 
+```
 
+#Figures - Most Abundant NN Species, No Annual Grass
+```{r}
+nn_cover_noAG <- all_all %>% filter(class == "Non-Native") %>% filter(!species == "ANNGRS") %>% group_by(status, month, species) %>% summarise(nncover = sum(as.numeric(as.character(cover))))
 
+view(nonnative_cover_noAG)
+
+nn_sum_cover_noAG <- nn_cover %>% filter(!species == "ANNGRS") %>% group_by(status, month) %>% summarise(sum_cover = sum(nncover))
+
+nonnative_cover_noAG <- merge(nn_cover_noAG, nn_sum_cover_noAG) %>% mutate(cover_ratio = (as.numeric(as.character(nncover))/sum_cover)*100)
+
+nn_sa4_noAG <- nonnative_cover_noAG %>% filter(status == "Staging Area 4")
+
+ggplot(nn_sa4_noAG) +
+  aes(x = month, y = cover_ratio, fill = species) +
+  geom_col()  + 
+  scale_fill_paletteer_d("tidyquant::tq_dark") +
+  labs(x = NULL,
+       y = "% of Non-Native Cover (-ANNGRS)",
+       fill = "Species") +
+  ggtitle("Staging Area 4") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
 ```
 
