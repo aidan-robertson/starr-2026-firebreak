@@ -1604,6 +1604,10 @@ ggplot(n_sl2) +
   theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5)) 
 
+view(n_sl2)
+
+#CLASSIFY ALL NATIVES AS ANNUAL OR PERRENIAL AND FILTER OUT ANNUALS, CREATE BAR CHART FOR ONLY CSS PERRENIALS!!!!!!
+
 ```
 
 ```{r} 
