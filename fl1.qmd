@@ -721,7 +721,7 @@ sa4_full <- merge_df(sa4_june_clean, sa4e_june_clean)
 
 #June Full Species List
 ```{r}
-june <- merge_df(fl1_full, fl2_full, sa1_full, sa2_full, sa3_full, sa4_full, sl1_full, sl2_full, sl3_full)
+june <- merge_df(fl1_full, fl2_full, sa1_full, sa2_full, sa3_full, sa4_full, sl1_full, sl2_full, sl3_full) #merge all june dfs
 
 all_june <- june %>%
   mutate(status = case_when(
@@ -734,13 +734,13 @@ all_june <- june %>%
     site == 3 & aspect == "slope" ~ "Slope 3",
     site == 3 & aspect == "staging area" ~ "Staging Area 3",
     site == 4 & aspect == "staging area" ~ "Staging Area 4",
-    .default = "Other"))
+    .default = "Other")) #new column for each site
 
-species_list <- june %>% dplyr::select(species) %>% distinct()
+species_list <- june %>% dplyr::select(species) %>% distinct() #create list of all individual species
 
-write_xlsx(species_list, "species_list_june.xlsx")
+write_xlsx(species_list, "species_list_june.xlsx") #export list, classified in excel
 
-species_class_june <- read_xlsx(path = here("data", "species_june_classified.xlsx")) 
+species_class_june <- read_xlsx(path = here("data", "species_june_classified.xlsx")) #read in classified df
 
 all_june_classified <- merge(all_june, species_class_june, by = "species") %>% 
   mutate(species = case_when(
@@ -751,10 +751,10 @@ all_june_classified <- merge(all_june, species_class_june, by = "species") %>%
              species == "UNK ERI" ~ "UNKERI",
              species == "CALWEE" ~ "PAECAL",
              species == "STEUIR" ~ "STEVIR",
-             .default = species))
+             .default = species)) #rename mistakes in entered data
 ```
 
-#June Plotting N/NN
+#June Plotting N/NN - TEST
 ```{r}
 ggplot(all_june_classified) +
   aes(y = (as.numeric(as.character(cover))), x = status, color = class ) +
@@ -770,8 +770,6 @@ ggplot(all_june_classified) +
        y = "Cover",
        color = "Cover Type") +
   theme_minimal()
-
-#is there a correlation between native cover and nn or bareground?
 ```
 
 
@@ -1468,7 +1466,7 @@ sa6_full_nov <- merge_df(sa6_nov_clean, sa6e_nov_clean, sa6w_nov_clean)
 
 #November Species List
 ```{r}
-nov <- merge_df(fl1_full_nov, fl2_full_nov, fl3_full_nov, sa1_full_nov, sa6_full_nov, sa3_full_nov, sa4_full_nov, sl1_full_nov, sl2_full_nov, sl3_full_nov)
+nov <- merge_df(fl1_full_nov, fl2_full_nov, fl3_full_nov, sa1_full_nov, sa6_full_nov, sa3_full_nov, sa4_full_nov, sl1_full_nov, sl2_full_nov, sl3_full_nov) #merge all nov data
 
 all_nov <- nov %>%
   mutate(status = case_when(
@@ -1482,37 +1480,37 @@ all_nov <- nov %>%
     site == 3 & aspect == "flat" ~ "Flat 3",
     site == 3 & aspect == "staging area" ~ "Staging Area 3",
     site == 4 & aspect == "staging area" ~ "Staging Area 4",
-    .default = "Other"))
+    .default = "Other")) #new column for each site
 
-species_list_nov <- nov %>% dplyr::select(species) %>% distinct()
+species_list_nov <- nov %>% dplyr::select(species) %>% distinct() #create list of all individual species
 
-write_xlsx(species_list_nov, "species_list_nov.xlsx")
+write_xlsx(species_list_nov, "species_list_nov.xlsx") #export list, classified in excel
 
-species_class_nov <- read_xlsx(path = here("data", "species_list_nov_classified.xlsx"))
+species_class_nov <- read_xlsx(path = here("data", "species_list_nov_classified.xlsx")) #read in classified df
 
 all_nov_classified <- merge(all_nov, species_class_nov, by = "species") %>% 
     mutate(species = case_when(
              species == "LUP sp." ~ "LUP spp",
              species == "LUP Sp." ~ "LUP spp",
-             .default = species))
+             .default = species)) #fix mistakes
 ```
 
 #Comparison Nov/June
 ```{r}
-all_all <- merge_df(all_nov_classified, all_june_classified) %>% 
+all_all <- merge_df(all_nov_classified, all_june_classified) %>% #merge nov and june
    mutate(class = case_when(
     class == "native" ~ "Native",
-    class == "non-native" ~ "Non-Native",
+    class == "non-native" ~ "Non-Native", #rename classification for figures
     class == "bare ground" ~ "Bare Ground")) %>% 
   dplyr::mutate(month = fct_relevel(month, "November", "June"),
-                class = fct_relevel(class, "Native", "Non-Native", "Bare Ground"))
+                class = fct_relevel(class, "Native", "Non-Native", "Bare Ground")) #reorder months and class for figures
 
-all_sumcover <- all_all %>% group_by(year, month, status, orientation, strip, quad, class) %>% summarise(sumcover = sum(as.numeric(as.character(cover))))
+all_sumcover <- all_all %>% group_by(year, month, status, orientation, strip, quad, class) %>% summarise(sumcover = sum(as.numeric(as.character(cover)))) #summarized cover for native, non-native, bare ground across quads at each site (everything in group_by)
 ```
 
 #Figures - Sum Cover
 ```{r}
-sa4_sumcover <- all_sumcover %>%  filter(status == "Staging Area 4") 
+sa4_sumcover <- all_sumcover %>%  filter(status == "Staging Area 4") #filter for site
 
 ggplot(sa4_sumcover) +
   aes(y = sumcover, x = class, color = class) +
@@ -1535,15 +1533,15 @@ ggplot(sa4_sumcover) +
 #Figures - Most Abundant NN Species
 ```{r}
 nn_cover <- all_all %>% filter(class == "Non-Native") %>% group_by(status, month, species) %>% 
-  summarise(nncover = sum(as.numeric(as.character(cover))))
+  summarise(nncover = sum(as.numeric(as.character(cover)))) #summarize nonnative cover across each site per species
 
-nn_sum_cover <- nn_cover %>% group_by(status, month) %>% summarise(sum_cover = sum(nncover))
+nn_sum_cover <- nn_cover %>% group_by(status, month) %>% summarise(sum_cover = sum(nncover)) #total sum of nn cover per site
 
-nonnative_cover <- merge(nn_cover, nn_sum_cover) %>% mutate(cover_ratio = (as.numeric(as.character(nncover))/sum_cover)*100)
+nonnative_cover <- merge(nn_cover, nn_sum_cover) %>% mutate(cover_ratio = (as.numeric(as.character(nncover))/sum_cover)*100) #merge dfs, create new column of % of nn cover per species per site
 
-nn_species_list <- all_all %>% filter(class == "Non-Native") %>% dplyr::select(species) %>%  distinct()
+nn_species_list <- all_all %>% filter(class == "Non-Native") %>% dplyr::select(species) %>%  distinct() #checking for all distinct nn species
 
-nn_sa4 <- nonnative_cover %>% filter(status == "Staging Area 4")
+nn_sa4 <- nonnative_cover %>% filter(status == "Staging Area 4") #filter by site
 
 ggplot(nn_sa4) +
   aes(x = month, y = cover_ratio, fill = species) +
@@ -1560,15 +1558,13 @@ ggplot(nn_sa4) +
 
 #Figures - Most Abundant NN Species, No Annual Grass
 ```{r}
-nn_cover_noAG <- all_all %>% filter(class == "Non-Native") %>% filter(!species == "ANNGRS") %>% group_by(status, month, species) %>% summarise(nncover = sum(as.numeric(as.character(cover))))
+nn_cover_noAG <- all_all %>% filter(class == "Non-Native") %>% filter(!species == "ANNGRS") %>% group_by(status, month, species) %>% summarise(nncover = sum(as.numeric(as.character(cover)))) ##summarize nonnative cover across each site per species, minus annual grass
 
-view(nonnative_cover_noAG)
+nn_sum_cover_noAG <- nn_cover %>% filter(!species == "ANNGRS") %>% group_by(status, month) %>% summarise(sum_cover = sum(nncover)) #total sum of nn cover per site minus annual grass
 
-nn_sum_cover_noAG <- nn_cover %>% filter(!species == "ANNGRS") %>% group_by(status, month) %>% summarise(sum_cover = sum(nncover))
+nonnative_cover_noAG <- merge(nn_cover_noAG, nn_sum_cover_noAG) %>% mutate(cover_ratio = (as.numeric(as.character(nncover))/sum_cover)*100) #merge dfs, create new column of % of nn cover per species per site
 
-nonnative_cover_noAG <- merge(nn_cover_noAG, nn_sum_cover_noAG) %>% mutate(cover_ratio = (as.numeric(as.character(nncover))/sum_cover)*100)
-
-nn_sa4_noAG <- nonnative_cover_noAG %>% filter(status == "Staging Area 4")
+nn_sa4_noAG <- nonnative_cover_noAG %>% filter(status == "Staging Area 4") #filter by site
 
 ggplot(nn_sa4_noAG) +
   aes(x = month, y = cover_ratio, fill = species) +
