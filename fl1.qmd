@@ -1578,3 +1578,35 @@ ggplot(nn_sa4_noAG) +
   theme(plot.title = element_text(hjust = 0.5))
 ```
 
+#Figures - Most Abundant Native Species
+```{r}
+n_cover <- all_all %>% filter(class == "Native") %>% group_by(status, month, species) %>% 
+  summarise(ncover = sum(as.numeric(as.character(cover)))) #summarize native cover across each site per species
+
+view(n_species_list)
+
+n_sum_cover <- n_cover %>% group_by(status, month) %>% summarise(sum_cover = sum(ncover)) #total sum of n cover per site
+
+native_cover <- merge(n_cover, n_sum_cover) %>% mutate(cover_ratio = (as.numeric(as.character(ncover))/sum_cover)*100) #merge dfs, create new column of % of n cover per species per site
+
+n_species_list <- all_all %>% filter(class == "Native") %>% dplyr::select(species) %>%  distinct() #checking for all distinct n species
+
+n_sl2 <- native_cover %>% filter(status == "Slope 2") #filter by site
+
+ggplot(n_sl2) +
+  aes(x = month, y = cover_ratio, fill = species) +
+  geom_col()  + 
+  scale_fill_manual(values = c("#FAAA78", "#D94118", "#9EABEB", "#DE5997", "#7FC98E", "#E36F6F", "#5484CC", "#ADAB28", "#63BC15", "#C487E6", "#E89E27", "#A623AD",  "#71C716", "#57BFD6", "#F2C469", "#826BC9", "#A47DB0")) +
+  labs(x = NULL,
+       y = "% of Native Cover",
+       fill = "Species") +
+  ggtitle("Slope 2") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5)) 
+
+```
+
+```{r} 
+ACMAME "#FAAA78", ACMGLA "#D94118", CALMAC "#9EABEB", CALSPL "#DE5997", CROSET "#7FC98E", ERIFAS "#E36F6F", ERIFOL "#EB923F", GALANG "#5484CC", HEMFAS "#F0D30C", HOLVIR "#63BC15", JEPPAR "#806CEF", LESFIL "#C487E6", MADELE "#E89E27", NASPUL "#A623AD", PHACIC "#E79EEB", PLATEN "#9EEBE8", PSUCAL "#F2C469", STEVIR "#A47DB0", ARTCAL "#B4E0B8", CIROCC "#C7589E", DAUPUS "#C6620C", LUPSPP "#7B5182", LUPALB "#BF95C6", MADGRA "#C79D16", MALLAU "#931910", OPULIT "#71C716", SALAPI "#B6F0D9", SALMEL "#826BC9", UNKERI "#44BBB9", SOLDOU "#5B2663", BACPIL "#266335", ERICAN "#EBE9BE", ERIPAR "#D9AA75", BRICAL "#2DA474", PAECAL "#99205A", RAFCAL "#D1C5ED", MARMAC "#71BF79", LAYCON "#7CA758", HETGRA "#BCE41B", HETARB "#F5490A", EUCCHR "#0AB6F5", CORRIG "#055471", PSUCAN "#E07EA8", PSUBIO "#57BFD6", ISOMEN "#ADAB28"
+```
+
