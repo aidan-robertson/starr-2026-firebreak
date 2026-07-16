@@ -1546,7 +1546,7 @@ nn_sa4 <- nonnative_cover %>% filter(status == "Staging Area 4") #filter by site
 ggplot(nn_sa4) +
   aes(x = month, y = cover_ratio, fill = species) +
   geom_col()  + 
-  scale_fill_paletteer_d("rcartocolor::Vivid") +
+  scale_fill_manual(values = c("#8CBD37","#B770B8","#692BD4","#72599C","#CAB363","#574728","#8ECDC5", "#E24B8A","#E2824B","#EF6C75"  )) +
   labs(x = NULL,
        y = "% of Non-Native Cover",
        fill = "Species") +
@@ -1554,6 +1554,36 @@ ggplot(nn_sa4) +
   theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5))
 
+```
+
+#NN colors
+```{r}
+1	ANNGRS "#8CBD37"
+14	BRANIG "#EDE740"
+2	CARPYC "#A63095"
+3	CENMEL "#E2B71D"
+4	CENSET "#6F1390"
+5	CHEMUR "#1BCC85"
+15	CIRVUL "#B770B8"
+6	CYNCAR "#D215D4"
+16	ERIBAN "#336313"
+17	ERO spp "#692BD4"
+7	EROCIC "#72599C"
+8	GALAPA "#CAB363"
+18	HEDRHA "#574728"
+9	HIRINC "#D6E019"
+19	HYPGLA "#8ECDC5"
+10	LACSER "#E24B8A"
+11	LYSARV "#E2824B"
+20	MARVUL "#5CA758"
+21	MEDPOL "#5D6412"
+12	OLOMIL "#B21F57"
+22	PLALAN "#F5EEA6"
+23	SALTRA "#EF6C75"
+24	SON spp"#E8C08B"
+25	SONOLE "#E88A0E"
+13	Thistle UNK "#C38BE8"
+26	TRIHIR "#F3C3DB"
 ```
 
 #Figures - Most Abundant NN Species, No Annual Grass
