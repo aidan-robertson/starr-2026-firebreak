@@ -1541,20 +1541,43 @@ nonnative_cover <- merge(nn_cover, nn_sum_cover) %>% mutate(cover_ratio = (as.nu
 
 nn_species_list <- all_all %>% filter(class == "Non-Native") %>% dplyr::select(species) %>%  distinct() #checking for all distinct nn species
 
-nn_sa4 <- nonnative_cover %>% filter(status == "Staging Area 4") #filter by site
+nn_sa1 <- nonnative_cover %>% filter(status == "Staging Area 1") #filter by site
 
-ggplot(nn_sa4) +
+ggplot(nn_fl2) +
   aes(x = month, y = cover_ratio, fill = species) +
   geom_col()  + 
-  scale_fill_manual(values = c("#8CBD37","#B770B8","#692BD4","#72599C","#CAB363","#574728","#8ECDC5", "#E24B8A","#E2824B","#EF6C75"  )) +
+ scale_fill_manual(values = c("#8CBD37", "#D215D4", "#D6E019", "#E24B8A", "#E2824B" )) +
   labs(x = NULL,
        y = "% of Non-Native Cover",
        fill = "Species") +
-  ggtitle("Staging Area 4") +
+  ggtitle("Flat 2") +
   theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5))
 
 ```
+
+#Figures - Most Abundant NN Species, No Annual Grass
+```{r}
+nn_cover_noAG <- all_all %>% filter(class == "Non-Native") %>% filter(!species == "ANNGRS") %>% group_by(status, month, species) %>% summarise(nncover = sum(as.numeric(as.character(cover)))) ##summarize nonnative cover across each site per species, minus annual grass
+
+nn_sum_cover_noAG <- nn_cover %>% filter(!species == "ANNGRS") %>% group_by(status, month) %>% summarise(sum_cover = sum(nncover)) #total sum of nn cover per site minus annual grass
+
+nonnative_cover_noAG <- merge(nn_cover_noAG, nn_sum_cover_noAG) %>% mutate(cover_ratio = (as.numeric(as.character(nncover))/sum_cover)*100) #merge dfs, create new column of % of nn cover per species per site
+
+nn_sa1_noAG <- nonnative_cover_noAG %>% filter(status == "Staging Area 1") #filter by site
+
+ggplot(nn_fl2_noAG) +
+  aes(x = month, y = cover_ratio, fill = species) +
+  geom_col()  + 
+   scale_fill_manual(values = c("#D215D4", "#D6E019", "#E24B8A", "#E2824B")) +
+  labs(x = NULL,
+       y = "% of Non-Native Cover (-ANNGRS)",
+       fill = "Species") +
+  ggtitle("Flat 2") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
 
 #NN colors
 ```{r}
@@ -1586,27 +1609,6 @@ ggplot(nn_sa4) +
 26	TRIHIR "#F3C3DB"
 ```
 
-#Figures - Most Abundant NN Species, No Annual Grass
-```{r}
-nn_cover_noAG <- all_all %>% filter(class == "Non-Native") %>% filter(!species == "ANNGRS") %>% group_by(status, month, species) %>% summarise(nncover = sum(as.numeric(as.character(cover)))) ##summarize nonnative cover across each site per species, minus annual grass
-
-nn_sum_cover_noAG <- nn_cover %>% filter(!species == "ANNGRS") %>% group_by(status, month) %>% summarise(sum_cover = sum(nncover)) #total sum of nn cover per site minus annual grass
-
-nonnative_cover_noAG <- merge(nn_cover_noAG, nn_sum_cover_noAG) %>% mutate(cover_ratio = (as.numeric(as.character(nncover))/sum_cover)*100) #merge dfs, create new column of % of nn cover per species per site
-
-nn_sa4_noAG <- nonnative_cover_noAG %>% filter(status == "Staging Area 4") #filter by site
-
-ggplot(nn_sa4_noAG) +
-  aes(x = month, y = cover_ratio, fill = species) +
-  geom_col()  + 
-  scale_fill_paletteer_d("tidyquant::tq_dark") +
-  labs(x = NULL,
-       y = "% of Non-Native Cover (-ANNGRS)",
-       fill = "Species") +
-  ggtitle("Staging Area 4") +
-  theme_minimal() +
-  theme(plot.title = element_text(hjust = 0.5))
-```
 
 #Figures - Most Abundant Native Species ANNUAL OR PERENNIAL
 ```{r}
